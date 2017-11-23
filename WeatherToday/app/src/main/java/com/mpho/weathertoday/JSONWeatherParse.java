@@ -1,5 +1,7 @@
 package com.mpho.weathertoday;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -8,27 +10,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Calendar;
+public class JSONWeatherParse extends AsyncTask<Void, Void, String> {
 
-public class JSONWeatherParse extends AsyncTask<String,Void,String>{
-
-    private TextView txtv_today_date,txtv_temperature,txtv_max_temp,txtv_min_temp,txtv_humidity,txtv_place;
+    private TextView txtv_temperature,txtv_max_temp,txtv_min_temp,txtv_humidity,txtv_place;
     private ImageView imv_weather_icon;
     private Double lattitude, longitude;
-    private CurrentWeatherDetails weather_det;
-    private byte[] weather_icon_image;
+    private Bitmap weather_icon_image;
 
-    public JSONWeatherParse(Double lat, Double lon, ImageView imv, TextView... params){
+    public JSONWeatherParse(Double lat, Double lon, ImageView imv_weather_icon, TextView... params){
 
         this.lattitude=lat;
         this.longitude=lon;
-        this.imv_weather_icon=imv;
-        this.txtv_today_date=params[0];
-        this.txtv_temperature=params[1];
-        this.txtv_max_temp=params[2];
-        this.txtv_min_temp=params[3];
-        this.txtv_humidity=params[4];
-        this.txtv_place=params[5];
+        this.imv_weather_icon= this.imv_weather_icon;
+        //this.txtv_today_date=params[0];
+        this.txtv_temperature=params[0];
+        this.txtv_max_temp=params[1];
+        this.txtv_min_temp=params[2];
+        this.txtv_humidity=params[3];
+        this.txtv_place=params[4];
     }
 
     private static String getString(String tag_name,JSONObject j_obj) throws JSONException{
@@ -95,38 +94,59 @@ public class JSONWeatherParse extends AsyncTask<String,Void,String>{
         return weather_det;
     }
 
+    /*
+     * Override this method to perform a computation on a background thread. The
+     * specified parameters are the parameters passed to {@link #execute}
+     * by the caller of this task.
+     * <p/>
+     * This method can call {@link #publishProgress} to publish updates
+     * on the UI thread.
+     *
+     * @param params The parameters of the task.
+     * @return A result, defined by the subclass of this task.
+     * @see #onPreExecute()
+     * @see #onPostExecute
+     * @see #publishProgress
+     */
+
     @Override
-    protected String doInBackground(String... params) {
-
-        OpenWeatherHttpClient opw_weather=new OpenWeatherHttpClient();
-        try{
-            String weather_results=opw_weather.getCurrentWeatherData(lattitude,longitude);
-
+    protected void onPostExecute(String weather_results){
+        CurrentWeatherDetails weather_details;
+        if(weather_results!=null){
             try {
-                this.weather_det=getWeatherinfo(weather_results);
-                this.weather_icon_image=opw_weather.getImage(weather_det.getIcon());
+                weather_details=getWeatherinfo(weather_results);
+
+                StringBuilder location=new StringBuilder();
+                UserLocationInformation u_location=weather_details.getUser_location();
+                location.append(u_location.getCity());
+                location.append(", ");
+                location.append(u_location.getCountry());
+                imv_weather_icon.setImageBitmap(weather_icon_image);
+                txtv_temperature.setText(String.valueOf(weather_details.getTemperature()));
+                txtv_max_temp.setText(String.valueOf(weather_details.getMax_temp()));
+                txtv_min_temp.setText(String.valueOf(weather_details.getMin_temp()));
+                txtv_humidity.setText(weather_details.getHumidity());
+                txtv_place.setText(location);
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @Override
+    protected String doInBackground(Void... params) {
+        CurrentWeatherDetails weatherDet;
+
+        try{
+            OpenWeatherHttpClient opw_weather=new OpenWeatherHttpClient();
+            weatherDet=getWeatherinfo(opw_weather.getCurrentWeatherData(lattitude,longitude));
+            this.weather_icon_image=opw_weather.getImage(weatherDet.getIcon());
+            return opw_weather.getCurrentWeatherData(lattitude,longitude);
+
         }catch (Throwable t){
             t.printStackTrace();
         }
-
-        String placeholder="";
-        return placeholder;
-    }
-    @Override
-    protected void onPostExecute(String x){
-
-        Calendar calendar_=Calendar.getInstance();
-        //imv_weather_icon.se;
-        txtv_today_date.setText(calendar_.getTime().toString());
-        txtv_temperature.setText(String.valueOf(weather_det.getTemperature()));
-        txtv_max_temp.setText(String.valueOf(weather_det.getMax_temp()));
-        txtv_min_temp.setText(String.valueOf(weather_det.getMin_temp()));
-        txtv_humidity.setText(weather_det.getHumidity());
-        UserLocationInformation u_location=weather_det.getUser_location();
-        txtv_place.setText(u_location.getCity()+", "+u_location.getCountry());
+        return null;
     }
 }

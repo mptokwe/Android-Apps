@@ -2,84 +2,96 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.mpho.weathertoday.MainActivity">
+    android:layout_height="match_parent"    
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.mpho.weathertoday.MainActivity"
+    android:scrollbars="vertical">
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Today Date"
-            android:id="@+id/today_date"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Current Time"
+        android:id="@+id/txtv_time"
+        android:gravity="center"
+        android:elevation="5dp"
+        android:textColor="@color/colorAccent"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
 
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/weather_icon"
-        android:layout_below="@+id/today_date"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="79dp" />
+        android:layout_height="150dp"
+        android:id="@+id/weather_icon_imageView"
+        android:src="@mipmap/ic_launcher"
+        android:layout_below="@+id/txtv_time"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
+        android:contentDescription="weather icon" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Temperature"
-        android:id="@+id/temperature"
-        android:layout_marginTop="41dp"
-        android:layout_below="@+id/weather_icon"
-        android:layout_alignLeft="@+id/temp_min"
-        android:layout_alignStart="@+id/temp_min" />
-
+        android:id="@+id/txtv_temp"
+        android:elevation="15dp"
+        android:gravity="center"
+        android:textColor="@color/colorAccent"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/weather_icon_imageView"
+        android:layout_alignParentStart="true" />
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Minimum temperature"
-        android:id="@+id/temp_min"
-        android:layout_centerVertical="true"
-        android:layout_alignLeft="@+id/temp_max"
-        android:layout_alignStart="@+id/temp_max" />
-
+        android:text="Maximum Temperature"
+        android:id="@+id/txtv_max_temp"
+        android:elevation="15dp"
+        android:gravity="center"
+        android:textColor="@color/colorAccent"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/txtv_temp"
+        android:layout_alignParentStart="true" />
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Maximum Temprature"
-        android:id="@+id/temp_max"
-        android:layout_marginTop="39dp"
-        android:layout_below="@+id/temp_min"
-        android:layout_alignLeft="@+id/humidity"
-        android:layout_alignStart="@+id/humidity" />
-
+        android:text="Minimum Temperature"
+        android:id="@+id/txtv_min_temp"
+        android:elevation="15dp"
+        android:gravity="center"
+        android:textColor="@color/colorAccent"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/txtv_max_temp"
+        android:layout_alignParentStart="true" />
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Humidity"
-        android:id="@+id/humidity"
-        android:layout_marginTop="43dp"
-        android:layout_below="@+id/temp_max"
-        android:layout_alignLeft="@+id/place"
-        android:layout_alignStart="@+id/place" />
-
+        android:id="@+id/txtv_humidity"
+        android:elevation="15dp"
+        android:gravity="center"
+        android:textColor="@color/colorAccent"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/txtv_min_temp"
+        android:layout_alignParentStart="true" />
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="City, Country"
-        android:id="@+id/place"
-        android:layout_below="@+id/humidity"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="45dp"
-        android:layout_marginStart="45dp"
-        android:layout_marginTop="41dp" />
-
+        android:text="Location"
+        android:id="@+id/txtv_place"
+        android:elevation="15dp"
+        android:gravity="center"
+        android:textColor="@color/colorAccent"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/txtv_humidity"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

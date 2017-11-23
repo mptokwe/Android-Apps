@@ -1,6 +1,9 @@
 package com.mpho.weathertoday;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,27 +26,30 @@ public class OpenWeatherHttpClient {
             connector.setDoInput(true);
             connector.setDoOutput(true);
             connector.connect();
+            int responseCode = connector.getResponseCode();
 
-            //read response
-            StringBuffer buff = null;
-            try {
-                buff = new StringBuffer();
-                input_s = connector.getInputStream();
-                BufferedReader buffer_read = new BufferedReader(new InputStreamReader(input_s));
-                String line;
-                while ((line = buffer_read.readLine()) != null) {
-                    buff.append(line);
-                    buff.append("\r\n");
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                //read response
+                StringBuffer buff = null;
+                try {
+                    buff = new StringBuffer();
+                    input_s = connector.getInputStream();
+                    BufferedReader buffer_read = new BufferedReader(new InputStreamReader(input_s));
+                    String line;
+                    while ((line = buffer_read.readLine()) != null) {
+                        buff.append(line);
+                        buff.append("\r\n");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+                if (input_s != null) {
+                    input_s.close();
+                }
+                connector.disconnect();
+                return buff.toString();
             }
-            if (input_s != null) {
-                input_s.close();
-            }
-            connector.disconnect();
-            return buff.toString();
-        } catch (IOException t) {
+        }catch (IOException t) {
             t.printStackTrace();
         } finally {
             try {
@@ -64,27 +70,33 @@ public class OpenWeatherHttpClient {
         return null;
     }
 
-    public byte[] getImage(String code){
+    public Bitmap getImage(String code){
         HttpsURLConnection connector=null;
         InputStream input_st=null;
-        try{
+        try {
             String IMG_URL = "http://openweather.org/img/w/";
-            connector=(HttpsURLConnection) (new URL(IMG_URL +code)).openConnection();
+            connector = (HttpsURLConnection) (new URL(IMG_URL + code+".png")).openConnection();
             connector.setRequestMethod("GET");
             connector.setDoInput(true);
             connector.setDoOutput(true);
             connector.connect();
+            int responseCode = connector.getResponseCode();
 
-            input_st=connector.getInputStream();
-            byte[] buffer=new byte[1024];
-            ByteArrayOutputStream byte_aos=new ByteArrayOutputStream();
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
 
-            while (input_st.read(buffer) != -1)
-                byte_aos.write(buffer);
+                input_st = connector.getInputStream();
+                byte[] buffer = new byte[1024];
+                ByteArrayOutputStream byte_aos = new ByteArrayOutputStream();
 
-            return byte_aos.toByteArray();
+                while (input_st.read(buffer) != -1)
+                    byte_aos.write(buffer);
 
-        } catch (Throwable t){
+                //return byte_aos.toByteArray();
+
+                return BitmapFactory.decodeByteArray(byte_aos.toByteArray(),0,byte_aos.toByteArray().length);
+
+            }
+        }catch (Throwable t){
             t.printStackTrace();
         }
         finally {
